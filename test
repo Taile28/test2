@@ -1,0 +1,508 @@
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "🦕 ADRENALINE HUB",
+   LoadingTitle = "ADRENALINE HUB",
+   LoadingSubtitle = "by syntax9000",
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "dsscript12"
+   },
+   Discord = {
+      Enabled = true,
+      Invite = "QpmNbkWq", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "🦕 ADRENALINE HUB 🦕",
+      Subtitle = "Key System",
+      Note = "STATUS = UNDETECTED",
+      FileName = "License Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = true, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"https://pastebin.com/raw/FSnysPxg"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+
+local MainTab = Window:CreateTab("Local Player", nil) -- Title, Image
+local MainSection = MainTab:CreateSection("Main")
+Rayfield:Notify({
+   Title = "WHITELISTED",
+   Content = "made by syntax9000",
+   Duration = 8.5,
+   Image = 4483362458,
+   Actions = { -- Notification Buttons
+      Ignore = {
+         Name = "CLOSE",
+         Callback = function()
+         print("The user tapped Okay!")
+      end
+   },
+},
+})
+
+local Button = MainTab:CreateButton({
+   Name = "Add Hunger",
+   Callback = function()
+   game.Workspace.GameEvents.EatPlant:FireServer(Workspace.GameMap.Ferns.Fern,2)
+   end,
+})
+local Button = MainTab:CreateButton({
+   Name = "Subtract Hunger",
+   Callback = function()
+   game.Workspace.GameEvents.EatPlant:FireServer(Workspace.GameMap.Ferns.Fern,-10)
+   end,
+})
+local Button = MainTab:CreateButton({
+   Name = "Add Thirst",
+   Callback = function()
+       local A_1 = game:GetService("Workspace").GameMap.Water.Water
+    local A_2 = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p
+    local Event = game:GetService("Workspace").GameEvents.addThirst
+    Event:FireServer(A_1, A_2)
+   end,
+})
+
+local Toggle
+
+Toggle = MainTab:CreateToggle({
+    Name = "Infinite Thirst",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        -- The function that takes place when the toggle is pressed
+        -- The variable (Value) is a boolean on whether the toggle is true or false
+        
+        -- Define a function to perform the actions in the loop
+        local function PerformActions()
+            -- Loop while the toggle is active
+            while Toggle.CurrentValue do
+                -- Perform the actions inside the loop
+                
+                local A_1 = game:GetService("Workspace").GameMap.Water.Water
+                local A_2 = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p
+                local Event = game:GetService("Workspace").GameEvents.addThirst
+                Event:FireServer(A_1, A_2)
+                
+                wait(0.1) -- Adjust the wait time as needed
+            end
+        end
+        
+        -- If the toggle is turned on, start the loop
+        if Value then
+            PerformActions()
+        end
+    end,
+})
+
+
+
+
+
+local MainSection = MainTab:CreateSection("Local Player")
+
+local WalkspeedSlider = MainTab:CreateSlider({
+   Name = "Walkspeed",
+   Range = {0, 100},
+   Increment = 1,
+   Suffix = "Speed",
+   CurrentValue = 16,
+   Flag = "Slider1", 
+   Callback = function(Value)
+       game.Players.LocalPlayer.Character.Dinosaur.WalkSpeed = Value
+   end,
+})
+
+local JumpPowerSlider = MainTab:CreateSlider({
+   Name = "Jump Power",
+   Range = {0, 100},
+   Increment = 1,
+   Suffix = "Jump Power",
+   CurrentValue = 16,
+   Flag = "Slider2", 
+   Callback = function(Value)
+       game.Players.LocalPlayer.Character.Dinosaur.JumpPower = Value
+   end,
+})
+
+-- Function to update Walkspeed continuously
+local function updateWalkspeedLoop()
+    while true do
+        -- Call the WalkspeedSlider callback function with the current value
+        WalkspeedSlider.Callback(WalkspeedSlider.CurrentValue)
+        wait(0) -- Adjust the delay as needed
+    end
+end
+
+-- Function to update JumpPower continuously
+local function updateJumpPowerLoop()
+    while true do
+        -- Call the JumpPowerSlider callback function with the current value
+        JumpPowerSlider.Callback(JumpPowerSlider.CurrentValue)
+        wait(0) -- Adjust the delay as needed
+    end
+end
+
+-- Start the update loops in separate coroutines
+coroutine.wrap(updateWalkspeedLoop)()
+coroutine.wrap(updateJumpPowerLoop)()
+
+
+local CombatTab = Window:CreateTab("Combat", nil) -- Title, Image
+local Section = CombatTab:CreateSection("Combat")
+
+local toggleValue = false -- Variable to store toggle state
+
+local Toggle = CombatTab:CreateToggle({
+   Name = "Automatic AOE",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+       -- The function that takes place when the toggle is pressed
+       -- The variable (Value) is a boolean on whether the toggle is true or false
+       toggleValue = Value -- Update the toggle state variable
+       if toggleValue then
+           -- When toggle is activated (true), continuously fire the server event
+           while toggleValue do
+               Workspace.GameEvents.AOEDamage:FireServer()
+               wait(1) -- Adjust the wait time as needed
+           end
+       end
+   end,
+})
+
+
+local toggleValue = false -- Variable to store toggle state
+
+local Toggle = CombatTab:CreateToggle({
+   Name = "Automatic ATTACK",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+       -- The function that takes place when the toggle is pressed
+       -- The variable (Value) is a boolean on whether the toggle is true or false
+       toggleValue = Value -- Update the toggle state variable
+       if toggleValue then
+           -- When toggle is activated (true), continuously fire the server event
+           while toggleValue do
+               Workspace.GameEvents.Damage:FireServer()
+               wait(1) -- Adjust the wait time as needed
+           end
+       end
+   end,
+})
+
+
+local Section = CombatTab:CreateSection("Quick Spawn")
+
+local Dropdown = nil  -- Define Dropdown variable outside the toggle callback
+
+local Toggle = CombatTab:CreateToggle({
+   Name = "Toggle Example",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+       -- The function that takes place when the toggle is pressed
+       -- The variable (Value) is a boolean on whether the toggle is true or false
+       if Value then
+           -- Dropdown menu creation should only happen when the toggle is enabled
+           Dropdown = CombatTab:CreateDropdown({
+               Name = "Dropdown Example",
+               Options = {"Kaiju Giraffatitan", "Option 2"},
+               CurrentOption = {"Kaiju Giraffatitan"},
+               MultipleOptions = false,
+               Flag = "Dropdown1",
+               Callback = function(Option)
+                   -- The function that takes place when the selected option is changed
+                   -- The variable (Option) is a table of strings for the current selected options
+                   -- You can use Option[1] to access the selected option
+                   local a = Option[1]
+                   local targ = Option[1]
+                   
+                   -- Fire the necessary server events with the selected option
+                   workspace.GameEvents.ChangeDinosaur:FireServer(a)
+                   wait(2.5)
+                   workspace.GameEvents.StartPlayer:FireServer()
+                   workspace.GameEvents.ChangeDinosaur:FireServer(targ)
+                   wait(3)
+                   workspace.GameEvents.ChangeDinosaur:FireServer(targ)
+               end,
+           })
+       else
+           -- If the toggle is disabled, you can handle it here (optional)
+           -- For example, you can remove the dropdown menu
+           if Dropdown then
+               Dropdown:Destroy()
+               Dropdown = nil
+           end
+       end
+   end,
+})
+
+
+
+
+
+
+
+
+
+local rs = workspace.GameEvents
+local pepe = game.Players.LocalPlayer
+
+local Dino1 -- Variable to store the selected elder dinosaur
+local Dino2 -- Variable to store the selected baby dinosaur
+
+local MiscTab = Window:CreateTab("Misc", nil) -- Title, Image
+local Section = MiscTab:CreateSection("Instant Elder")
+
+local ElderDropdown = MiscTab:CreateDropdown({
+    Name = "Select Elder Dinosaur",
+    Options = {"Acrocanthosaurus","Achillobator","Aegisuchus","Albino Terror","Albertosaurus","Amargasaurus","Ankylosaurus","Apatosaurus","Archelon","Arizonasaurus","Allosaurus","Avimimus","Avinychus","Balaur","Barosaurus","Baryonyx","Brachiosaurus","Carcharocles Megalodon","Carcharodontosaurus","Carnotaurus","Caveman","Ceratosaurus","Chilantaisaurus","Coelacanth","Coelophysis","Concavenator","Corythosaurus","Cretoxyrhina","Dacentrurus","Deinocheirus","Deinosuchus","Dilophosaurus","Dunkleosteus","Ectenosaurus","Edmontonia","Eotriceratops","Euoplocephalus","Fasolasuchus","Fresnosaurus","Futalognkosaurus","Gallimimus","Giganotosaurus","Gojirasaurus","Guanlong","Helicoprion","Hatzegopteryx","Ichthyosaurus","Ichthyovenator","Iguanodon","Irritator","Istiodactylus","Kentrosaurus","Koolasuchus","Kosmoceratops","Kronosaurus Boyacensis","Leedsichthys","Liopleurodon","Lusotitan","Machimosaurus","Maiasaura","Mapusaurus","Mastodonsaurus","Mayhem Crawler","Mayhem Excavator","Mayhem Tripod","Mayhem Wanderer","Megavore","Megalania","Megalodon","Mosasaurus","Murusraptor","Onchopristis","Ornithomimus","Parasaurolophus","Pachycephalosaurus","Plateosaurus","Pliosaurus","Prognathodon","Puertasaurus","Pteranodon","Purusaurus","Quetzalcoatlus","Rhomaleosaurus","Saltasaurus","Sarcosuchus","Saurolophus","Saurophaganax","Sauroniops","Scylla","Shantungosaurus","Shastasaurus","Shunosaurus","Spinosaurus","Stegoceras","Stegosaurus","Styracosaurus","Suchomimus","Sauroposeidon","Titanosaurus","Tarbosaurus","Thalassomedon","Therizinosaurus","Torvosaurus","Triceratops","Troodon","Tusoteuthis","Tyrannosaurus Rex","Tyrannotitan","Utahraptor","Yandusaurus","Yutyrannus"},
+    CurrentOption = "Acrocanthosaurus", -- Default value
+    MultipleOptions = false,
+    Flag = "ElderDropdown",
+    Callback = function(Option)
+        Dino1 = Option[1] -- Store the selected elder dinosaur option
+    end,
+})
+
+local BabyDropdown = MiscTab:CreateDropdown({
+    Name = "Select Baby Dinosaur",
+    Options = {"Golden Carcharocles Megalodon","Inverted Carcharocles Megalodon","Styracosaurus Plush","Grizzly Spinosaurus","RakeMother Brachiosaurus","Acrocanthosaurus","Achillobator","Aegisuchus","Albino Terror","Albertosaurus","Amargasaurus","Ankylosaurus","Apatosaurus","Archelon","Arizonasaurus","Allosaurus","Avimimus","Avinychus","Balaur","Barosaurus","Baryonyx","Brachiosaurus","Carcharocles Megalodon","Carcharodontosaurus","Carnotaurus","Caveman","Ceratosaurus","Chilantaisaurus","Coelacanth","Coelophysis","Concavenator","Corythosaurus","Cretoxyrhina","Dacentrurus","Deinocheirus","Deinosuchus","Dilophosaurus","Dunkleosteus","Ectenosaurus","Edmontonia","Eotriceratops","Euoplocephalus","Fasolasuchus","Fresnosaurus","Futalognkosaurus","Gallimimus","Giganotosaurus","Gojirasaurus","Guanlong","Helicoprion","Hatzegopteryx","Ichthyosaurus","Ichthyovenator","Iguanodon","Irritator","Istiodactylus","Kentrosaurus","Koolasuchus","Kosmoceratops","Kronosaurus Boyacensis","Leedsichthys","Liopleurodon","Lusotitan","Machimosaurus","Maiasaura","Mapusaurus","Mastodonsaurus","Mayhem Crawler","Mayhem Excavator","Mayhem Tripod","Mayhem Wanderer","Megavore","Megalania","Megalodon","Mosasaurus","Murusraptor","Onchopristis","Ornithomimus","Parasaurolophus","Pachycephalosaurus","Plateosaurus","Pliosaurus","Prognathodon","Puertasaurus","Pteranodon","Purusaurus","Quetzalcoatlus","Rhomaleosaurus","Saltasaurus","Sarcosuchus","Saurolophus","Saurophaganax","Sauroniops","Scylla","Shantungosaurus","Shastasaurus","Shunosaurus","Spinosaurus","Stegoceras","Stegosaurus","Styracosaurus","Suchomimus","Sauroposeidon","Titanosaurus","Tarbosaurus","Thalassomedon","Therizinosaurus","Torvosaurus","Triceratops","Troodon","Tusoteuthis","Tyrannosaurus Rex","Tyrannotitan","Utahraptor","Yandusaurus","Yutyrannus"},
+    CurrentOption = "Grizzly Spinosaurus", -- Default value
+    MultipleOptions = false,
+    Flag = "BabyDropdown",
+    Callback = function(Option)
+        Dino2 = Option[1] -- Store the selected baby dinosaur option
+    end,
+})
+
+
+
+local Toggle -- Define Toggle variable outside to make it accessible
+
+Toggle = MiscTab:CreateToggle({
+    Name = "Instant Elder",
+    CurrentValue = false,
+    Flag = "InstantElderToggle",
+    Callback = function(Value)
+        if Value then
+            -- Start the loop in a coroutine
+            coroutine.wrap(function()
+                while Toggle.CurrentValue do
+                    if not pepe.Character then
+                        rs.GoToMenu:FireServer(1)
+                        rs.ChangeDinosaur:FireServer(Dino1) -- Use the stored elder dinosaur option
+                        task.wait(1)
+                        while not pepe.Character do
+                            rs.StartPlayer:FireServer()
+                            rs.ChangeDinosaur:FireServer(Dino2) -- Use the stored baby dinosaur option
+                            task.wait()
+                        end
+                        task.wait(1)
+                    end
+                    task.wait()  -- Wait before checking the loop condition again
+                end
+            end)()
+        else
+            -- Handle the case when the toggle is turned off
+            -- You can add any necessary actions here
+        end
+    end,
+})
+
+
+
+local Section = MiscTab:CreateSection("Miscellaneous")
+local Button = MiscTab:CreateButton({
+   Name = "Omnivore",
+   Callback = function()
+      game.Players.LocalPlayer.Character.MeatEater.Value = true
+      game.Players.LocalPlayer.Character.PlantEater.Value = true
+
+      -- Call the notification system
+      Rayfield:Notify({
+         Title = "Omnivore Activated",
+         Content = "You are now an omnivore!",
+         Duration = 10.5,
+         Image = 4483362458,
+         Actions = { -- Notification Buttons
+            Ignore = {
+               Name = "CLOSE",
+               Callback = function()
+                  print("The user tapped Okay!")
+               end
+            },
+         },
+      })
+   end,
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local FarmingTab -- Declare the variable outside the scope of the if statement
+
+local Toggle = MiscTab:CreateToggle({
+    Name = "Can Swim",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        -- Update the canSwim value based on the toggle's value
+        game.Players.LocalPlayer.Character.Stats.canSwim.Value = Value
+    end
+})
+
+local ClickTeleportKey = Enum.KeyCode.F -- Default keybind for teleportation
+local ClickTPEnabled = false -- Variable to track whether click-to-move is enabled
+local InputService = game:GetService("UserInputService")
+local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
+
+-- Function to handle click-to-move behavior
+local function HandleClickToMove()
+    function MoveTo(position)
+        local Character = Player.Character
+        if Character then
+            Character:MoveTo(position)
+        end
+    end
+    
+    InputService.InputBegan:Connect(function(input)
+         if ClickTPEnabled and input.KeyCode == ClickTeleportKey then
+            MoveTo(Mouse.Hit.p)
+        end
+    end)
+end
+
+-- Callback function for the Toggle
+local function ToggleClickToMove(Value)
+    ClickTPEnabled = Value -- Update the click-to-move enabled state
+    
+    if ClickTPEnabled then
+        HandleClickToMove() -- Enable click-to-move
+    else
+        -- You can optionally disconnect the InputBegan connection here if desired
+    end
+end
+
+-- Create the Toggle
+local Toggle = MiscTab:CreateToggle({
+   Name = "Click Teleport",
+   CurrentValue = false,
+   Flag = "ToggleClickToMove",
+   Callback = ToggleClickToMove,
+})
+
+-- Create the Farming tab
+local FarmingTab = Window:CreateTab("Farming", nil) -- Title, Image
+local FarmingSection = FarmingTab:CreateSection("Farming")
+
+-- Set canSwim to false initially since the toggle is initially off
+game.Players.LocalPlayer.Character.Stats.canSwim.Value = false
+
+local ToggleBeamLocator -- Declare outside to access later
+
+local function BeamLocatorLoop()
+    while true do
+        wait()
+        if _G.BeamLocator and game.workspace:FindFirstChild("Chest") then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.workspace.Chest.CFrame
+        end
+    end
+end
+
+local ToggleBeam = FarmingTab:CreateToggle({
+    Name = "Glass Beam Auto Farm",
+    CurrentValue = false,
+    Flag = "ToggleBeamLocator",
+    Callback = function(Value)
+        -- Toggle the global variable
+        _G.BeamLocator = Value
+        if Value then
+            Rayfield:Notify({
+                Title = "Beam Function",
+                Content = "Message : Beam Auto Farm Enabled",
+                Duration = 5,
+                Image = 4483362458,
+                Actions = {
+                    Ignore = {
+                        Name = "CLOSE",
+                        Callback = function()
+                            print("The user tapped Okay!")
+                        end
+                    }
+                }
+            })
+            print("Beam locator enabled")
+        else
+            Rayfield:Notify({
+                Title = "Beam Function",
+                Content = "Message : Beam Auto Farm Disabled",
+                Duration = 5,
+                Image = 4483362458,
+                Actions = {
+                    Ignore = {
+                        Name = "CLOSE",
+                        Callback = function()
+                            print("The user tapped Okay!")
+                        end
+                    }
+                }
+            })
+            print("Beam Auto Farm Disabled")
+        end
+    end
+})
+
+-- Start the coroutine for the Beam Locator loop
+coroutine.wrap(BeamLocatorLoop)()
+
+-- Create the Keybinds tab
+local KeybindsTab = Window:CreateTab("Keybinds", nil) -- Title, Image
+local KeybindsSection = KeybindsTab:CreateSection("Keybinds")
+
+-- Create the input field for the keybind
+local KeybindsInput = KeybindsTab:CreateInput({
+   Name = "Teleport",
+   PlaceholderText = "F",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+       -- The function that takes place when the input is changed
+       -- The variable (Text) is a string for the value in the text box
+       if Text and #Text == 1 then
+           local key = string.upper(Text)
+           local keyCode = Enum.KeyCode[key]
+           if keyCode then
+               -- Update the keybind value to the new keyCode
+               ClickTeleportKey = keyCode
+               print("Teleport keybind updated to:", keyCode)
+           else
+               print("Invalid key")
+           end
+       else
+           print("Invalid input")
+       end
+   end,
+})
